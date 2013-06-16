@@ -67,9 +67,17 @@
 	
 	if (appid) {
 		[defaults setObject:appid forKey:@"FBAppId"];
-	}else {
+	} else {
 		[defaults removeObjectForKey:@"FBAppId"];
 	}
+    
+    if (urlSchemeSuffix)
+    {
+		[defaults setObject:urlSchemeSuffix forKey:@"FBUrlSchemeSuffix"];
+    } else {
+        [defaults removeObjectForKey:@"FBUrlSchemeSuffix"];
+    }
+
 	
 	[defaults synchronize];
 }
@@ -82,6 +90,7 @@
 	[defaults removeObjectForKey:@"FBAccessToken"];
 	[defaults removeObjectForKey:@"FBSessionExpires"];
 	[defaults removeObjectForKey:@"FBAppId"];
+    [defaults removeObjectForKey:@"FBUrlSchemeSuffix"];
 	[defaults synchronize];
 }
 
@@ -91,11 +100,14 @@
 	RELEASE_TO_NIL(uid);
 	RELEASE_TO_NIL(facebook);
 	RELEASE_TO_NIL(appid);
+	RELEASE_TO_NIL(urlSchemeSuffix);
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 	NSString *uid_ = [defaults objectForKey:@"FBUserId"];
 	appid = [[defaults stringForKey:@"FBAppId"] copy];
-	facebook = [[Facebook alloc] initWithAppId:appid urlSchemeSuffix:nil andDelegate:self];
-	
+    urlSchemeSuffix = [[defaults stringForKey:@"FBUrlSchemeSuffix"] copy];
+
+	facebook = [[Facebook alloc] initWithAppId:appid urlSchemeSuffix:urlSchemeSuffix andDelegate:self];
+    
 	VerboseLog(@"[DEBUG] facebook _restore, uid = %@",uid_);
 	if (uid_)
 	{
@@ -119,6 +131,7 @@
 	RELEASE_TO_NIL(facebook);
 	RELEASE_TO_NIL(stateListeners);
 	RELEASE_TO_NIL(appid);
+	RELEASE_TO_NIL(urlSchemeSuffix);
 	RELEASE_TO_NIL(permissions);
 	RELEASE_TO_NIL(uid);
 	[super dealloc];
@@ -304,6 +317,19 @@ if(![x isKindOfClass:[t class]]){ \
 }
 
 /**
+ * JS eample:
+ *
+ * var facebook = require('facebook');
+ * facebook.urlSchemeSuffix = 'suffix';
+ * alert(facebook.urlSchemeSuffix);
+ *
+ */
+-(id)urlSchemeSuffix
+{
+    return urlSchemeSuffix;
+}
+
+/**
  * JS example:
  *
  * var facebook = require('facebook');
@@ -365,6 +391,21 @@ if(![x isKindOfClass:[t class]]){ \
 	[appid autorelease];
 	appid = [[TiUtils stringValue:arg] copy];
 	[facebook setAppId:appid];
+}
+
+/**
+ * JS eample:
+ *
+ * var facebook = require('facebook');
+ * facebook.urlSchemeSuffix = 'suffix';
+ * alert(facebook.urlSchemeSuffix);
+ *
+ */
+-(id)setUrlSchemeSuffix:(id)arg
+{
+    [urlSchemeSuffix autorelease];
+    urlSchemeSuffix = [[TiUtils stringValue:arg] copy];
+    [facebook setUrlSchemeSuffix:urlSchemeSuffix];
 }
 
 /**

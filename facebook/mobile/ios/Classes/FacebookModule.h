@@ -20,6 +20,7 @@
 	BOOL loggedIn;
 	NSString *uid;
 	NSString *url;
+	NSString *urlSchemeSuffix;
 	NSString *appid;
 	NSArray *permissions;
 	NSMutableArray *stateListeners;
